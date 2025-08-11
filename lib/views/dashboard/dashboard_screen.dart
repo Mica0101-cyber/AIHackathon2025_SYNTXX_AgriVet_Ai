@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../view_models/livestock_viewmodel.dart';
-import '../sidebar_menu.dart';
 import 'package:intl/intl.dart';
-import '../../views/livestock_screen/edit_livestock_screen.dart';
+
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
@@ -212,7 +211,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   onTap: () => Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (_) => EditLiveStockScreen(
+                                      builder: (_) => EditLivestockScreen(
                                           livestock: livestock),
                                     ),
                                   ).then((_) => _loadData()),

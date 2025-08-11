@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/feed_record.dart';
-
+import 'package:supabase_flutter/supabase_flutter.dart';
 class FeedRecordsViewModel extends ChangeNotifier {
   final supabase = Supabase.instance.client;
   List<FeedRecord> records = [];
