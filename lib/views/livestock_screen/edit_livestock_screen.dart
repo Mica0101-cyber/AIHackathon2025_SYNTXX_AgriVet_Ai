@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:phonebook_app/views/livestock_screen/breed_record/bred_record_screen.dart';
 import 'package:provider/provider.dart';
 import '../../view_models/livestock_viewmodel.dart';
 import '../../models/livestock.dart';
@@ -309,7 +310,7 @@ class _EditLiveStockScreenState extends State<EditLiveStockScreen>
               children: [
                 FeedRecordsScreen(livestockId: widget.livestock.id!),
                 WeightRecordsScreen(livestockId: widget.livestock.id!),
-                const Center(child: Text('Breeding Records')),
+                BreedingRecordsScreen(livestockId: widget.livestock.id!),
                 const Center(child: Text('Medical Records')),
               ],
             ),
