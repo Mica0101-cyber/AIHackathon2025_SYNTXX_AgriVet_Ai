@@ -20,7 +20,7 @@ class BreedingRecordsViewModel extends ChangeNotifier {
           .toList();
       notifyListeners();
     } catch (e) {
-      debugPrint('Error fetching breeding records: $e');
+      debugPrint('Error fetching breeding records: $e'); 
     } 
   }
 

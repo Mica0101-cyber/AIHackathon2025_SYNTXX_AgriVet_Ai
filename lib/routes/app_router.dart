@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:phonebook_app/views/livestock_screen/add_livestock_screen.dart';
-import 'package:phonebook_app/views/livestock_screen/weight_record/weight_records_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../views/auth_screen.dart';
 import '../views/contacts_old/contact_list_screen.dart';
@@ -9,8 +8,11 @@ import '../views/dashboard/dashboard_screen.dart';
 import '../views/livestock_screen/livestock_list_screen.dart';
 import '../views/chat_screen.dart';
 
+
 class AppRouter extends StatelessWidget {
   const AppRouter({Key? key}) : super(key: key);
+  
+  get someLivestockId => null;
 
   @override
   Widget build(BuildContext context) {
@@ -24,12 +26,14 @@ class AppRouter extends StatelessWidget {
         '/signin': (context) => const AuthScreen(),
         '/phonebook': (context) => const ContactListScreen(), // no longer used
         '/addContact': (context) => const UserRegistrationScreen(), // no longer used
-        '/dashboard': (context) => const DashboardScreen(),
+        '/dashboard': (context) => DashboardScreen(),
         '/chatScreen': (context) => const ChatScreen(),
         '/livestockList': (context) => const LivestockListScreen(),
-       '/addLivestock': (context) => const AddLiveStockScreen(),
-        
+        '/addLivestock': (context) => const AddLiveStockScreen(),
+   
+// remove 'const' and pass valid int
 
+       
 
       },
       onUnknownRoute: (settings) => MaterialPageRoute(

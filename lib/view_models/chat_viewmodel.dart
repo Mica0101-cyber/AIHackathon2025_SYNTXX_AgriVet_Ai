@@ -27,8 +27,8 @@ class ChatViewModel extends ChangeNotifier {
   bool get isLoading => _isLoading;
 
   final List<String> _presetQuestions = [
-    'Best feed for dairy cows?',
-    'How to prevent mastitis in goats?',
+    'Hindi kumakain baboy ko, ano gagawin?',
+    'How can I tell if my pig is pregnant?',
   ];
   List<String> get presetQuestions => List.unmodifiable(_presetQuestions);
 

@@ -49,9 +49,9 @@ class BreedingRecordsScreen extends StatelessWidget {
               const SizedBox(height: 24),
               const Text(
                 'Breeding History',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 7),
               Expanded(
                 child: vm.records.isEmpty
                     ? const Center(
@@ -257,7 +257,7 @@ class _BreedingRecordFormState extends State<BreedingRecordForm> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
       child: Form(
         key: _formKey,
         child: Column(
@@ -286,9 +286,10 @@ class _BreedingRecordFormState extends State<BreedingRecordForm> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: 8),
                 Expanded(
                   child: DropdownButtonFormField<String>(
+                    isExpanded: true, 
                     value: _methods.contains(_selectedMethod)
                         ? _selectedMethod
                         : null,
@@ -299,7 +300,7 @@ class _BreedingRecordFormState extends State<BreedingRecordForm> {
                     items: _methods.map((method) {
                       return DropdownMenuItem(
                         value: method,
-                        child: Text(method),
+                        child: Text(method,  overflow: TextOverflow.ellipsis, ),
                       );
                     }).toList(),
                     onChanged: (val) => setState(() => _selectedMethod = val),

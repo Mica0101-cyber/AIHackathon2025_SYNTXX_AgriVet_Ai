@@ -82,7 +82,7 @@ class WeightRecordsScreen extends StatelessWidget {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 IconButton(
-                                  icon: const Icon(Icons.edit),
+                                  icon: const Icon(Icons.monitor_weight),
                                   onPressed: () {
                                     showModalBottomSheet(
                                       context: context,

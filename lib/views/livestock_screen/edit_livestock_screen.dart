@@ -299,9 +299,9 @@ class _EditLiveStockScreenState extends State<EditLiveStockScreen>
             unselectedLabelColor: Colors.blueGrey,
             tabs: const [
               Tab(icon: Icon(Icons.restaurant), text: 'Feeding'),
-              Tab(icon: Icon(Icons.fitness_center), text: 'Weight'),
-              Tab(icon: Icon(Icons.pregnant_woman), text: 'Breeding'),
-              Tab(icon: Icon(Icons.medical_services), text: 'Medical'),
+              Tab(icon: Icon(Icons.scale), text: 'Weight'),
+              Tab(icon: Icon(Icons.account_tree), text: 'Breeding'),
+              Tab(icon: Icon(Icons.medical_services), text: 'Health'),
             ],
           ),
           SizedBox(
@@ -312,7 +312,7 @@ class _EditLiveStockScreenState extends State<EditLiveStockScreen>
                 FeedRecordsScreen(livestockId: widget.livestock.id!),
                 WeightRecordsScreen(livestockId: widget.livestock.id!),
                 BreedingRecordsScreen(livestockId: widget.livestock.id!),
-                HealthRecordsView.withProvider(livestockId: widget.livestock.id!),
+                HealthRecordsScreen(livestockId: widget.livestock.id!),
               ],
             ),
           ),

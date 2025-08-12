@@ -40,25 +40,35 @@ class LivestockViewModel extends ChangeNotifier {
 
   /// Adds a new livestock record
   Future<void> addLivestock(Livestock livestock) async {
-    try {
-      final userId = supabase.auth.currentUser!.id;
-      final inserted = await supabase
-          .from('livestock')
-          .insert(livestock.toMap()..['owner_id'] = userId)
-          .select()
-          .single();
-      await supabase.from('livestock').insert(livestock.toMap());
-      // 👇 INSERT NOTIFICATION **AFTER SUCCESS**
-      await NotificationService(supabase).create(
-        recipientId: userId,
-        title: 'Livestock added',
-        body: '“${inserted['name']}” has been added.',
-      );
-      await fetchLivestocks();
-    } catch (error) {
-      debugPrint('Error adding livestock: $error');
-    }
+  try {
+    final userId = supabase.auth.currentUser!.id;
+
+    // Merge the livestock data with user_id for DB insertion
+    final livestockData = {
+      ...livestock.toMap(),
+      'user_id': userId, // Make sure your DB column matches this name
+    };
+
+    // Insert the record and get the inserted row back
+    final inserted = await supabase
+        .from('livestock')
+        .insert(livestockData)
+        .select()
+        .single();
+
+    // Create a notification after successful insert
+    await NotificationService(supabase).create(
+      recipientId: userId,
+      title: 'Livestock added',
+      body: '“${inserted['name']}” has been added.',
+    );
+
+    // Refresh the livestock list in the ViewModel
+    await fetchLivestocks();
+  } catch (error) {
+    debugPrint('Error adding livestock: $error');
   }
+}
 
   /// Updates an existing livestock record
   Future<void> updateLivestock(Livestock livestock) async {

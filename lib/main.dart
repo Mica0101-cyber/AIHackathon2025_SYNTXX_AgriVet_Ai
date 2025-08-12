@@ -8,6 +8,7 @@ import '../view_models/notifications_view_model.dart';
 import '../view_models/weight_records_view_model.dart';
 import '../services/notification_service.dart';
 import '../routes/app_router.dart'; // Assume you have a simple routing setup
+import '../view_models/health_record.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,6 +26,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => ContactViewModel()),
         ChangeNotifierProvider(create: (_) => LivestockViewModel()),
         ChangeNotifierProvider(create: (_) => FeedRecordsViewModel()),
+        ChangeNotifierProvider(create: (_) => HealthRecordsViewModel()),
         Provider(create: (_) => Supabase.instance.client),
         ProxyProvider<SupabaseClient, NotificationService>(
           update: (_, supabase, __) => NotificationService(supabase),
@@ -33,7 +35,7 @@ Future<void> main() async {
           create: (ctx) => NotificationsViewModel(
             ctx.read<NotificationService>(),
             ctx.read<SupabaseClient>(),
-          ),
+          ),  
         ),
         ChangeNotifierProvider<WeightRecordsViewModel>(
           create: (ctx) => WeightRecordsViewModel(

@@ -41,11 +41,20 @@ class Livestock {
     );
   }
 
+  get weights => null;
+
+  get feedRecords => null;
+
+  get breedingRecords => null;
+
+  get healthRecords => null;
+
   /// Converts a Livestock instance to a map for insertion/updating, using camelCase keys
   Map<String, dynamic> toMap() {
     return {
       'name': name,
       'dateOfBirth': dateOfBirth.toIso8601String(),
+      'status': status,
       'breed': breed,
       'tagNumber': tagNumber,
     };
