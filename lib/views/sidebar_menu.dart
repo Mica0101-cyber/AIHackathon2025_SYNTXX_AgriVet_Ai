@@ -1,16 +1,16 @@
+// lib/widgets/sidebar_menu.dart
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
-
 import 'chat_screen.dart';
 import '../views/livestock_screen/livestock_list_screen.dart';
 import '../views/dashboard/dashboard_screen.dart';
 import '../views/notifications/notifications_screen.dart';
 import '../services/notification_service.dart';
 import '../view_models/notifications_view_model.dart';
-import '../views/widgets/notification_bell.dart';
+import 'widgets/notification_bell.dart';
 
 class SidebarMenu extends StatefulWidget {
   const SidebarMenu({Key? key}) : super(key: key);

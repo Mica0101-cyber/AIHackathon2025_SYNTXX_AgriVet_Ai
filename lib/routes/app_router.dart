@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:phonebook_app/views/dashboard/feed_record_screen';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../views/auth_screen.dart';
 import '../views/contacts_old/contact_list_screen.dart';
@@ -27,6 +28,7 @@ class AppRouter extends StatelessWidget {
         '/chatScreen': (context) => const ChatScreen(),
         '/livestockList': (context) => const LivestockListScreen(),
         '/addLivestock': (context) => const AddLiveStockScreen(),
+        
       },
       onUnknownRoute: (settings) => MaterialPageRoute(
         builder: (context) => const Scaffold(

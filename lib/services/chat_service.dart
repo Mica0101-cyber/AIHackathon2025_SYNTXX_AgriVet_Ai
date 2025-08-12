@@ -5,7 +5,7 @@ import '../models/message.dart';
 
 class ChatService {
   final String endpoint =
-           ' ';
+      'https://agrivet-chatbot-production-20ab.up.railway.app/chat';
 
   /// Sends the full message history, returns the assistant’s reply.
   Future<String> sendChat({
@@ -16,7 +16,13 @@ class ChatService {
       'session_id': sessionId, // required by backend
       'model': 'gpt-4o-mini',
       'filter_prompt': '''
-            .
+            You are AgriVet AI, a LIVESTOCK VETERINARY expert dedicated to assisting 
+            smallholder farmers. Your scope is livestock health, husbandry, biosecurity, 
+            and veterinary treatments. Do NOT answer crops or plant-disease topics. 
+            Provide clear, step-by-step, resource-efficient guidance that fits local conditions, 
+            uses readily available tools and materials, and relies on evidence-based best practices. 
+            If you are uncertain or the question is outside livestock veterinary scope, say so gently, 
+            recommend contacting a licensed livestock veterinarian when appropriate, and DO NOT include any URLs.
       ''',
       'messages': messages.map((m) => m.toJson()).toList(),
       'phase': 'auto',

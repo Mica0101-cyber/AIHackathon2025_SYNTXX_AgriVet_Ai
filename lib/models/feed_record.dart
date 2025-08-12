@@ -52,6 +52,8 @@
       );
     }
 
+  get quantity => null;
+
     /// Convert to map for insertion/updating
     Map<String, dynamic> toMap() {
       return {

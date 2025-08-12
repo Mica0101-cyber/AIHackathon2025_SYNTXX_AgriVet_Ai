@@ -1,3 +1,4 @@
+// lib/view_models/breeding_records_view_model.dart
 import 'package:flutter/material.dart';
 import '../models/breeding_record.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -12,12 +13,11 @@ class BreedingRecordsViewModel extends ChangeNotifier {
       final data = await supabase
           .from('breeding_record')
           .select()
-          .eq('livestock_id', livestockId);
-
+          .eq('livestock_id', livestockId)
+          .order('datetime', ascending: false);
       records = (data as List)
           .map((m) => BreedingRecord.fromMap(m as Map<String, dynamic>))
           .toList();
-
       notifyListeners();
     } catch (e) {
       debugPrint('Error fetching breeding records: $e');

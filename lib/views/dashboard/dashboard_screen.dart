@@ -147,7 +147,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             icon: const Icon(Icons.monitor_weight, size: 36, color: Colors.white),
                             color: Colors.blue.shade400,
                             onTap: () {
-                              Navigator.pushNamed(context, '/weightRecords');
+                              Navigator.pushNamed(context, '/feedRecords');
                             },
                           ),
                           _DashboardCard(
@@ -165,10 +165,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             icon: const Icon(Icons.medical_services, size: 36, color: Colors.white),
                             color: Colors.red.shade400,
                             onTap: () {
-                              Navigator.pushNamed(context, '/breedingRecords');
+                              Navigator.pushNamed(context, '/healthRecords');
                             },
                           ),
-                          
                         ],
                       ),
 

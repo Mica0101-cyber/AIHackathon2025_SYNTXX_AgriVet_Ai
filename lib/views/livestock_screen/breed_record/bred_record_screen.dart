@@ -57,17 +57,18 @@ class BreedingRecordsScreen extends StatelessWidget {
                         itemCount: vm.records.length,
                         itemBuilder: (context, i) {
                           final rec = vm.records[i];
-                          final dateStr = rec.date
+                          final dateStr = rec.datetime
                               .toLocal()
                               .toIso8601String()
                               .split('T')
                               .first;
                           return ListTile(
-                            title: Text('${rec.type} - ${rec.feedType}'),
+                            title: Text('Method: ${rec.method}'),
                             subtitle: Text(
                               'Date: $dateStr\n'
-                              'Amount: ${rec.amount.toStringAsFixed(2)} kg\n'
-                              'Notes: ${rec.notes ?? "N/A"}',
+                              'Type: ${rec.breedingType ?? "N/A"}\n'
+                              'Piglets Born: ${rec.pigletBorn ?? "N/A"}\n'
+                              'Notes: ${rec.notes ?? ""}',
                             ),
                             isThreeLine: true,
                             trailing: Row(
@@ -154,18 +155,18 @@ class BreedingRecordForm extends StatefulWidget {
 
 class _BreedingRecordFormState extends State<BreedingRecordForm> {
   final _formKey = GlobalKey<FormState>();
-  late TextEditingController _amountController;
+  late TextEditingController _pigletBornController;
   late TextEditingController _notesController;
-  String? _selectedFeedType;
+  String? _selectedMethod;
   String? _selectedBreedingType;
   DateTime? _selectedDate;
   bool _isUpdating = false;
 
-  final _feedTypes = <String>[
-    'Feed 1',
-    'Feed 2',
-    'Feed 3',
-    'Feed 4',
+  final _methods = <String>[
+    'Natural Mating',
+    'Artificial Insemination',
+    'Heat Detection',
+    'Pregnancy Check',
   ];
 
   final _breedingTypes = <String>[
@@ -179,31 +180,28 @@ class _BreedingRecordFormState extends State<BreedingRecordForm> {
   void initState() {
     super.initState();
 
-    _amountController = TextEditingController(
-      text: widget.existing?.amount.toString() ?? '',
-    );
-
-    _notesController = TextEditingController(
-      text: widget.existing?.notes ?? '',
-    );
+    _pigletBornController =
+        TextEditingController(text: widget.existing?.pigletBorn ?? '');
+    _notesController =
+        TextEditingController(text: widget.existing?.notes ?? '');
 
     _isUpdating = widget.existing != null;
-    _selectedDate = widget.existing?.date;
+    _selectedDate = widget.existing?.datetime;
 
-    if (widget.existing != null &&
-        _feedTypes.contains(widget.existing!.feedType)) {
-      _selectedFeedType = widget.existing!.feedType;
-    }
-
-    if (widget.existing != null &&
-        _breedingTypes.contains(widget.existing!.type)) {
-      _selectedBreedingType = widget.existing!.type;
+    if (widget.existing != null) {
+      if (_methods.contains(widget.existing!.method)) {
+        _selectedMethod = widget.existing!.method;
+      }
+      if (widget.existing!.breedingType != null &&
+          _breedingTypes.contains(widget.existing!.breedingType)) {
+        _selectedBreedingType = widget.existing!.breedingType;
+      }
     }
   }
 
   @override
   void dispose() {
-    _amountController.dispose();
+    _pigletBornController.dispose();
     _notesController.dispose();
     super.dispose();
   }
@@ -235,13 +233,15 @@ class _BreedingRecordFormState extends State<BreedingRecordForm> {
     final rec = BreedingRecord(
       id: widget.existing?.id,
       livestockId: widget.livestockId,
-      date: _selectedDate!,
-      feedType: _selectedFeedType!,
-      amount: double.tryParse(_amountController.text.trim()) ?? 0,
-      notes: _notesController.text.trim().isEmpty
-          ? null
-          : _notesController.text.trim(),
-      type: _selectedBreedingType!,
+      datetime: _selectedDate!,
+      method: _selectedMethod!,
+      breedingType: _selectedBreedingType,
+      pigletBorn: _pigletBornController.text.trim().isNotEmpty 
+          ? _pigletBornController.text.trim() 
+          : null,
+      notes: _notesController.text.trim().isNotEmpty 
+          ? _notesController.text.trim() 
+          : null,
     );
 
     await widget.onSubmit(rec);
@@ -264,7 +264,7 @@ class _BreedingRecordFormState extends State<BreedingRecordForm> {
                     onTap: _pickDate,
                     child: InputDecorator(
                       decoration: const InputDecoration(
-                        labelText: 'Date',
+                        labelText: 'Breeding Date',
                         border: OutlineInputBorder(),
                         suffixIcon: Icon(Icons.calendar_today),
                       ),
@@ -283,23 +283,22 @@ class _BreedingRecordFormState extends State<BreedingRecordForm> {
                 const SizedBox(width: 16),
                 Expanded(
                   child: DropdownButtonFormField<String>(
-                    value: _feedTypes.contains(_selectedFeedType)
-                        ? _selectedFeedType
+                    value: _methods.contains(_selectedMethod)
+                        ? _selectedMethod
                         : null,
                     decoration: const InputDecoration(
-                      labelText: 'Feed Type',
+                      labelText: 'Method',
                       border: OutlineInputBorder(),
                     ),
-                    items: _feedTypes.map((type) {
+                    items: _methods.map((method) {
                       return DropdownMenuItem(
-                        value: type,
-                        child: Text(type),
+                        value: method,
+                        child: Text(method),
                       );
                     }).toList(),
-                    onChanged: (val) => setState(() => _selectedFeedType = val),
-                    validator: (v) => v == null || v.isEmpty
-                        ? 'Please choose a feed type'
-                        : null,
+                    onChanged: (val) => setState(() => _selectedMethod = val),
+                    validator: (v) =>
+                        v == null || v.isEmpty ? 'Please choose a method' : null,
                   ),
                 ),
               ],
@@ -310,7 +309,7 @@ class _BreedingRecordFormState extends State<BreedingRecordForm> {
                   ? _selectedBreedingType
                   : null,
               decoration: const InputDecoration(
-                labelText: 'Breeding Type',
+                labelText: 'Breeding Type (Optional)',
                 border: OutlineInputBorder(),
               ),
               items: _breedingTypes.map((type) {
@@ -320,20 +319,15 @@ class _BreedingRecordFormState extends State<BreedingRecordForm> {
                 );
               }).toList(),
               onChanged: (val) => setState(() => _selectedBreedingType = val),
-              validator: (v) => v == null || v.isEmpty
-                  ? 'Please choose a breeding type'
-                  : null,
             ),
             const SizedBox(height: 16),
             TextFormField(
-              controller: _amountController,
+              controller: _pigletBornController,
               decoration: const InputDecoration(
-                labelText: 'Amount (kg)',
+                labelText: 'Number of Piglets Born (Optional)',
                 border: OutlineInputBorder(),
               ),
               keyboardType: TextInputType.number,
-              validator: (v) =>
-                  v == null || v.trim().isEmpty ? 'Amount is required' : null,
             ),
             const SizedBox(height: 16),
             TextFormField(
@@ -342,8 +336,7 @@ class _BreedingRecordFormState extends State<BreedingRecordForm> {
                 labelText: 'Notes (Optional)',
                 border: OutlineInputBorder(),
               ),
-              keyboardType: TextInputType.text,
-              maxLines: 2,
+              maxLines: 3,
             ),
             const SizedBox(height: 24),
             SizedBox(

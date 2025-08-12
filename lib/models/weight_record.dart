@@ -32,6 +32,8 @@ class WeightRecord {
     );
   }
 
+  get date => null;
+
   Map<String, dynamic> toMap() => {
         'livestock_id': livestockId,
         'datetime': datetime.toIso8601String(),
