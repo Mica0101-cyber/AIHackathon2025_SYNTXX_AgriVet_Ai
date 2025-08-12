@@ -1,5 +1,5 @@
 class Contact {
-  final int? id;
+  final int? id; // Supabase will auto-generate this
   final String name;
   final String phone;
   final String email;
@@ -11,19 +11,20 @@ class Contact {
     required this.email,
   });
 
-  // Convert a map from Supabase to a Contact object
+  /// Convert a map from Supabase into a Contact object
   factory Contact.fromMap(Map<String, dynamic> map) {
     return Contact(
-      id: map['id'],
-      name: map['name'],
-      phone: map['phone'],
-      email: map['email'],
+      id: map['id'] as int?,
+      name: map['name'] ?? '',
+      phone: map['phone'] ?? '',
+      email: map['email'] ?? '',
     );
   }
 
-  // Convert a Contact object to a map for insertion/updating
+  /// Convert a Contact object into a map for Supabase insert/update
   Map<String, dynamic> toMap() {
     return {
+      if (id != null) 'id': id,
       'name': name,
       'phone': phone,
       'email': email,

@@ -69,7 +69,15 @@ class WeightRecordsScreen extends StatelessWidget {
                               .first;
                           return ListTile(
                             title: Text('${rec.weight.toStringAsFixed(2)} kg'),
-                            subtitle: Text('Date: $dateStr'),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Date: $dateStr'),
+                                if (rec.notes != null &&
+                                    rec.notes!.trim().isNotEmpty)
+                                  Text('Notes: ${rec.notes!}'),
+                              ],
+                            ),
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -155,6 +163,7 @@ class WeightRecordForm extends StatefulWidget {
 class _WeightRecordFormState extends State<WeightRecordForm> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _weightController;
+  late TextEditingController _notesController; // Added controller for notes
   DateTime? _selectedDate;
   bool _isUpdating = false;
 
@@ -164,6 +173,9 @@ class _WeightRecordFormState extends State<WeightRecordForm> {
     _weightController = TextEditingController(
       text: widget.existing?.weight.toString() ?? '',
     );
+    _notesController = TextEditingController(
+      text: widget.existing?.notes ?? '',
+    );
     _isUpdating = widget.existing != null;
     _selectedDate = widget.existing?.datetime ?? DateTime.now();
   }
@@ -171,6 +183,7 @@ class _WeightRecordFormState extends State<WeightRecordForm> {
   @override
   void dispose() {
     _weightController.dispose();
+    _notesController.dispose();
     super.dispose();
   }
 
@@ -201,6 +214,9 @@ class _WeightRecordFormState extends State<WeightRecordForm> {
       livestockId: widget.livestockId,
       datetime: _selectedDate!,
       weight: double.tryParse(_weightController.text.trim()) ?? 0,
+      notes: _notesController.text.trim().isEmpty
+          ? null
+          : _notesController.text.trim(), // Optional notes
     );
 
     await widget.onSubmit(rec);
@@ -246,6 +262,15 @@ class _WeightRecordFormState extends State<WeightRecordForm> {
                   const TextInputType.numberWithOptions(decimal: true),
               validator: (v) =>
                   v == null || v.trim().isEmpty ? 'Weight is required' : null,
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _notesController,
+              decoration: const InputDecoration(
+                labelText: 'Notes (optional)',
+                border: OutlineInputBorder(),
+              ),
+              maxLines: 2,
             ),
             const SizedBox(height: 24),
             SizedBox(

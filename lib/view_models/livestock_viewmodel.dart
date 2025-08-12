@@ -10,6 +10,12 @@ class LivestockViewModel extends ChangeNotifier {
   /// Supabase client instance
   final supabase = Supabase.instance.client;
 
+  get feedRecords => null;
+
+  get weightRecords => null;
+
+  get breedingRecords => null;
+
   /// Fetches all livestock records from the 'livestock' table
   Future<void> fetchLivestocks() async {
     try {
@@ -88,4 +94,10 @@ class LivestockViewModel extends ChangeNotifier {
       debugPrint('Error deleting livestock: $error');
     }
   }
+
+  Future<void> fetchFeedRecords() async {}
+
+  Future<void> fetchWeightRecords() async {}
+
+  Future<void> fetchBreedingRecords() async {}
 }

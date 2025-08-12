@@ -21,14 +21,15 @@ class BreedingRecordsViewModel extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       debugPrint('Error fetching breeding records: $e');
-    }
+    } 
   }
 
   /// Add a new breeding record
   Future<void> addRecord(BreedingRecord record) async {
     try {
+      debugPrint(record.toMap().toString());
       await supabase.from('breeding_record').insert(record.toMap());
-      await fetchRecords(record.livestockId);
+      await fetchRecords(record.livestockId); 
     } catch (e) {
       debugPrint('Error adding breeding record: $e');
     }

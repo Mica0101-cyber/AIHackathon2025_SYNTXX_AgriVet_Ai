@@ -25,13 +25,17 @@ class BreedingRecordsScreen extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   showModalBottomSheet(
-                    context: context,
+                    context: context, 
                     isScrollControlled: true,
                     builder: (_) => Padding(
                       padding: MediaQuery.of(context).viewInsets,
                       child: BreedingRecordForm(
                         livestockId: livestockId,
-                        onSubmit: vm.addRecord,
+                        onSubmit: (record) async {
+                          await vm.addRecord(record);
+                          vm.fetchRecords(livestockId);
+                          debugPrint('Record added: ${record.toMap()}');
+                        },
                       ),
                     ),
                   );
@@ -88,6 +92,7 @@ class BreedingRecordsScreen extends StatelessWidget {
                                           existing: rec,
                                           onSubmit: (updated) async {
                                             await vm.updateRecord(updated);
+                                            vm.fetchRecords(livestockId);
                                           },
                                         ),
                                       ),
@@ -120,6 +125,7 @@ class BreedingRecordsScreen extends StatelessWidget {
                                     if (confirm == true) {
                                       await vm.deleteRecord(
                                           rec.id!, livestockId);
+                                      vm.fetchRecords(livestockId);
                                     }
                                   },
                                 ),
@@ -236,11 +242,11 @@ class _BreedingRecordFormState extends State<BreedingRecordForm> {
       datetime: _selectedDate!,
       method: _selectedMethod!,
       breedingType: _selectedBreedingType,
-      pigletBorn: _pigletBornController.text.trim().isNotEmpty 
-          ? _pigletBornController.text.trim() 
+      pigletBorn: _pigletBornController.text.trim().isNotEmpty
+          ? _pigletBornController.text.trim()
           : null,
-      notes: _notesController.text.trim().isNotEmpty 
-          ? _notesController.text.trim() 
+      notes: _notesController.text.trim().isNotEmpty
+          ? _notesController.text.trim()
           : null,
     );
 

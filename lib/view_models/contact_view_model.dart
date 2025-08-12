@@ -22,23 +22,29 @@ class ContactViewModel extends ChangeNotifier {
   // Create a new contact
   Future<void> addContact(Contact contact) async {
     try {
+      if (contact.name.trim().isEmpty) {
+        throw Exception('Name is required');
+      }
       await supabase.from('contacts').insert(contact.toMap());
       await fetchContacts();
     } catch (error) {
-      print('Error adding contact: $error');
+      debugPrint('Error adding contact: $error');
     }
   }
 
   // Update an existing contact
   Future<void> updateContact(Contact contact) async {
     try {
+      if (contact.id == null) {
+        throw Exception('Contact ID is required for update');
+      }
       await supabase
           .from('contacts')
           .update(contact.toMap())
           .eq('id', contact.id!);
       await fetchContacts();
     } catch (error) {
-      print('Error updating contact: $error');
+      debugPrint('Error updating contact: $error');
     }
   }
 
@@ -48,7 +54,7 @@ class ContactViewModel extends ChangeNotifier {
       await supabase.from('contacts').delete().eq('id', id);
       await fetchContacts();
     } catch (error) {
-      print('Error deleting contact: $error');
+      debugPrint('Error deleting contact: $error');
     }
   }
 }

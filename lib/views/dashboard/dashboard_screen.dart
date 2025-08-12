@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
+
 import '../../view_models/livestock_viewmodel.dart';
 import '../sidebar_menu.dart';
-import 'package:intl/intl.dart';
-import '../../views/livestock_screen/edit_livestock_screen.dart';
+import '../livestock_screen/edit_livestock_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
@@ -32,8 +33,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     final viewModel = Provider.of<LivestockViewModel>(context);
     final totalLivestocks = viewModel.livestocks.length;
-    final now = DateTime.now();
-    final formattedDate = DateFormat.yMMMMd().format(now);
+    final formattedDate = DateFormat.yMMMMd().format(DateTime.now());
 
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
@@ -82,9 +82,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            const Text(
                               'Hello, Farmer! 👋',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 22,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
@@ -118,7 +118,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             icon: const Text('🐷', style: TextStyle(fontSize: 40)),
                             color: Colors.orange.shade400,
                             onTap: () {
-                              Navigator.pushNamed(context, '/livestock')
+                              Navigator.pushNamed(context, '/livestockList')
                                   .then((_) => _loadData());
                             },
                           ),
@@ -147,14 +147,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             icon: const Icon(Icons.monitor_weight, size: 36, color: Colors.white),
                             color: Colors.blue.shade400,
                             onTap: () {
-                              Navigator.pushNamed(context, '/feedRecords');
+                              Navigator.pushNamed(context, '/weightRecords');
                             },
                           ),
                           _DashboardCard(
                             title: 'Health Records',
                             value: '',
                             icon: const Icon(Icons.medical_services, size: 36, color: Colors.white),
-                            color: Colors.red.shade400,
+                            color: Colors.red.shade300,
                             onTap: () {
                               Navigator.pushNamed(context, '/healthRecords');
                             },
@@ -162,10 +162,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           _DashboardCard(
                             title: 'Breeding Records',
                             value: '',
-                            icon: const Icon(Icons.medical_services, size: 36, color: Colors.white),
-                            color: Colors.red.shade400,
+                            icon: const Icon(Icons.pets, size: 36, color: Colors.white),
+                            color: Colors.brown.shade400,
                             onTap: () {
-                              Navigator.pushNamed(context, '/healthRecords');
+                              Navigator.pushNamed(context, '/breedingRecords');
                             },
                           ),
                         ],
@@ -183,7 +183,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                       const SizedBox(height: 8),
                       viewModel.livestocks.isEmpty
-                          ? const Text('No recent livestock.', style: TextStyle(color: Colors.grey))
+                          ? const Text(
+                              'No recent livestock.',
+                              style: TextStyle(color: Colors.grey),
+                            )
                           : ListView.separated(
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
@@ -222,7 +225,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (_) => EditLiveStockScreen(
-                                          livestock: livestock),
+                                        livestock: livestock,
+                                      ),
                                     ),
                                   ).then((_) => _loadData()),
                                 );

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:phonebook_app/views/dashboard/feed_record_screen';
+import 'package:phonebook_app/views/livestock_screen/add_livestock_screen.dart';
+import 'package:phonebook_app/views/livestock_screen/weight_record/weight_records_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../views/auth_screen.dart';
 import '../views/contacts_old/contact_list_screen.dart';
 import '../views/contacts_old/add_contact_screen.dart';
 import '../views/dashboard/dashboard_screen.dart';
 import '../views/livestock_screen/livestock_list_screen.dart';
-import '../views/livestock_screen/add_livestock_screen.dart';
 import '../views/chat_screen.dart';
 
 class AppRouter extends StatelessWidget {
@@ -23,12 +23,14 @@ class AppRouter extends StatelessWidget {
         '/': (context) => AuthChecker(),
         '/signin': (context) => const AuthScreen(),
         '/phonebook': (context) => const ContactListScreen(), // no longer used
-        '/addContact': (context) => const AddContactScreen(), // no longer used
+        '/addContact': (context) => const UserRegistrationScreen(), // no longer used
         '/dashboard': (context) => const DashboardScreen(),
         '/chatScreen': (context) => const ChatScreen(),
         '/livestockList': (context) => const LivestockListScreen(),
-        '/addLivestock': (context) => const AddLiveStockScreen(),
+       '/addLivestock': (context) => const AddLiveStockScreen(),
         
+
+
       },
       onUnknownRoute: (settings) => MaterialPageRoute(
         builder: (context) => const Scaffold(

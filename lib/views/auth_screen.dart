@@ -14,6 +14,7 @@ class _AuthScreenState extends State<AuthScreen> {
   AuthMode _authMode = AuthMode.signIn;
   final _formKey = GlobalKey<FormState>();
 
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
@@ -42,14 +43,20 @@ class _AuthScreenState extends State<AuthScreen> {
             _confirmPasswordController.text.trim()) {
           throw Exception('Passwords do not match');
         }
+
         final response = await Supabase.instance.client.auth.signUp(
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
+          data: {
+            'name': _nameController.text.trim(), // store in user metadata
+          },
         );
+
         if (response.user != null) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-                content: Text('Registration successful! Please sign in.')),
+              content: Text('Registration successful! Please sign in.'),
+            ),
           );
           setState(() => _authMode = AuthMode.signIn);
           return;
@@ -67,6 +74,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
   @override
   void dispose() {
+    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
@@ -84,14 +92,12 @@ class _AuthScreenState extends State<AuthScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Logo placeholder - replace with your own asset
               Image.asset(
                 'assets/images/login_page/login_logo.png',
                 height: 150,
                 fit: BoxFit.contain,
               ),
               const SizedBox(height: 32),
-              // Title
               Text(
                 isRegistering ? 'Create Account' : 'Welcome Back',
                 style: const TextStyle(
@@ -100,7 +106,6 @@ class _AuthScreenState extends State<AuthScreen> {
                 ),
               ),
               const SizedBox(height: 24),
-              // Form container
               Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
@@ -112,6 +117,22 @@ class _AuthScreenState extends State<AuthScreen> {
                     key: _formKey,
                     child: Column(
                       children: [
+                        if (isRegistering) ...[
+                          TextFormField(
+                            controller: _nameController,
+                            decoration: const InputDecoration(
+                              labelText: 'Full Name',
+                              border: OutlineInputBorder(),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.trim().isEmpty) {
+                                return 'Please enter your name';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 16),
+                        ],
                         TextFormField(
                           controller: _emailController,
                           decoration: const InputDecoration(
@@ -181,7 +202,9 @@ class _AuthScreenState extends State<AuthScreen> {
                                   child: Text(
                                     isRegistering ? 'Register' : 'Sign In',
                                     style: const TextStyle(
-                                        fontSize: 16, color: Colors.white),
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ),

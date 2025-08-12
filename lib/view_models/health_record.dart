@@ -1,56 +1,57 @@
 import 'package:flutter/material.dart';
-import '../models/health_record.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../models/health_record.dart';
 
 class HealthRecordsViewModel extends ChangeNotifier {
-  final supabase = Supabase.instance.client;
+  final SupabaseClient supabase = Supabase.instance.client;
+  final int livestockId;  // siguraduhing int talaga ito
   List<HealthRecord> records = [];
 
-  /// Fetch health records for a specific livestock
-  Future<void> fetchRecords(int livestockId) async {
+  HealthRecordsViewModel({required this.livestockId});
+
+  Future<void> fetchRecords() async {
     try {
       final data = await supabase
-          .from('health_record')
+          .from('health_records')  // use plural everywhere
           .select()
           .eq('livestock_id', livestockId);
+
       records = (data as List)
-          .map((m) => HealthRecord.fromMap(m as Map<String, dynamic>))
+          .map((m) => HealthRecord.fromJson(m as Map<String, dynamic>))
           .toList();
+
       notifyListeners();
     } catch (e) {
       debugPrint('Error fetching health records: $e');
     }
   }
 
-  /// Add a new health record
   Future<void> addRecord(HealthRecord record) async {
     try {
-      await supabase.from('health_record').insert(record.toMap());
-      await fetchRecords(record.livestockId);
+      await supabase.from('health_records').insert(record.toJson());
+      await fetchRecords();
     } catch (e) {
       debugPrint('Error adding health record: $e');
     }
   }
 
-  /// Delete a health record
-  Future<void> deleteRecord(int id, int livestockId) async {
+  Future<void> deleteRecord(int id) async {
     try {
-      await supabase.from('health_record').delete().eq('id', id);
-      await fetchRecords(livestockId);
+      await supabase.from('health_records').delete().eq('id', id);
+      await fetchRecords();
     } catch (e) {
       debugPrint('Error deleting health record: $e');
     }
   }
 
-  /// Update an existing health record
   Future<void> updateRecord(HealthRecord record) async {
     if (record.id == null) return;
     try {
       await supabase
-          .from('health_record')
-          .update(record.toMap())
+          .from('health_records')
+          .update(record.toJson())
           .eq('id', record.id!);
-      await fetchRecords(record.livestockId);
+      await fetchRecords();
     } catch (e) {
       debugPrint('Error updating health record: $e');
     }

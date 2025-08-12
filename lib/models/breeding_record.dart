@@ -35,11 +35,19 @@ class BreedingRecord {
     );
   }
 
+  DateTime? get date => null;
+
+  get maleId => null;
+
+  get status => null;
+
+  get femaleId => null;
+
   Map<String, dynamic> toMap() {
     return {
       if (id != null) 'id': id,
       'livestock_id': livestockId,
-      'datetime': datetime.toIso8601String(),
+      'datetime': datetime.toIso8601String().split('T').first,
       'method': method,
       if (breedingType != null) 'breeding_type': breedingType,
       if (pigletBorn != null) 'piglet_born': pigletBorn,

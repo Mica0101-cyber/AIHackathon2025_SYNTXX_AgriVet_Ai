@@ -2,56 +2,53 @@ class HealthRecord {
   final int? id;
   final int livestockId;
   final DateTime date;
+  final String procedure;
   final String diagnosis;
-  final String medicineUsed; // Medicine/Vaccine/Supplement used
+  final String medicineUsed;
   final String dosage;
   final String administeredBy;
-  final String? notes;
-  final String procedure; // Dropdown: Vaccination, Deworming, Castration, Treatment, Vitamin Supplementation, Others
-  final String outcome; // Dropdown: Success, Failed
+  final String outcome;
+  final String notes;
 
   HealthRecord({
     this.id,
     required this.livestockId,
     required this.date,
+    required this.procedure,
     required this.diagnosis,
     required this.medicineUsed,
     required this.dosage,
     required this.administeredBy,
-    this.notes,
-    required this.procedure,
     required this.outcome,
+    required this.notes,
   });
 
-  factory HealthRecord.fromMap(Map<String, dynamic> map) {
+  factory HealthRecord.fromJson(Map<String, dynamic> json) {
     return HealthRecord(
-      id: map['id'] as int?,
-      livestockId: map['livestock_id'] as int,
-      date: DateTime.parse(map['date']),
-      diagnosis: map['diagnosis'] ?? '',
-      medicineUsed: map['medicine_used'] ?? '',
-      dosage: map['dosage'] ?? '',
-      administeredBy: map['administered_by'] ?? '',
-      notes: map['notes'],
-      procedure: map['procedure'] ?? '',
-      outcome: map['outcome'] ?? '',
+      id: json['id'] as int?,
+      livestockId: json['livestock_id'] as int,
+      date: DateTime.parse(json['date']),
+      procedure: json['procedure'] ?? '',
+      diagnosis: json['diagnosis'] ?? '',
+      medicineUsed: json['medicine_used'] ?? '',
+      dosage: json['dosage'] ?? '',
+      administeredBy: json['administered_by'] ?? '',
+      outcome: json['outcome'] ?? '',
+      notes: json['notes'] ?? '',
     );
   }
 
-  get treatment => null;
-
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toJson() {
     return {
-      if (id != null) 'id': id,
       'livestock_id': livestockId,
       'date': date.toIso8601String(),
+      'procedure': procedure,
       'diagnosis': diagnosis,
       'medicine_used': medicineUsed,
       'dosage': dosage,
       'administered_by': administeredBy,
-      'notes': notes,
-      'procedure': procedure,
       'outcome': outcome,
+      'notes': notes,
     };
   }
 }

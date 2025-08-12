@@ -9,7 +9,7 @@ class WeightRecord {
     this.id,
     required this.livestockId,
     required this.datetime,
-    required this.weight,
+    required this.weight, String? notes,
   });
 
   factory WeightRecord.fromMap(Map<String, dynamic> map) {
@@ -33,6 +33,8 @@ class WeightRecord {
   }
 
   get date => null;
+
+  get notes => null;
 
   Map<String, dynamic> toMap() => {
         'livestock_id': livestockId,

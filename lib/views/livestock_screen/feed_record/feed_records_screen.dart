@@ -66,7 +66,8 @@ class FeedRecordsScreen extends StatelessWidget {
                             title: Text(rec.feedType),
                             subtitle: Text(
                               'Date: $dateStr\n'
-                              'Amount: ${rec.amount.toStringAsFixed(2)} kg',
+                              'Amount: ${rec.amount.toStringAsFixed(2)} kg\n'
+                              '${rec.notes != null && rec.notes!.isNotEmpty ? "Notes: ${rec.notes}" : ""}',
                             ),
                             isThreeLine: true,
                             trailing: Row(
@@ -154,45 +155,34 @@ class FeedRecordForm extends StatefulWidget {
 class _FeedRecordFormState extends State<FeedRecordForm> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _amountController;
-  String? _selectedFeedType;
+  late TextEditingController _feedTypeController;
+  late TextEditingController _notesController;
   DateTime? _selectedDate;
   bool _isUpdating = false;
-
-  final _feedTypes = <String>[
-    'Feed 1',
-    'Feed 2',
-    'Feed 3',
-    'Feed 4',
-    // …add more types here…
-  ];
 
   @override
   void initState() {
     super.initState();
 
-    // always start with the amount (editing or not)
     _amountController = TextEditingController(
       text: widget.existing?.amount.toString() ?? '',
     );
+    _feedTypeController = TextEditingController(
+      text: widget.existing?.feedType ?? '',
+    );
+    _notesController = TextEditingController(
+      text: widget.existing?.notes ?? '',
+    );
 
-    // mark editing mode if there's an existing record
     _isUpdating = widget.existing != null;
-
-    // pre-fill the date if editing
     _selectedDate = widget.existing?.datetime;
-
-    // only pre-fill feedType if it's one of your dropdown options
-    if (widget.existing != null &&
-        _feedTypes.contains(widget.existing!.feedType)) {
-      _selectedFeedType = widget.existing!.feedType;
-    } else {
-      _selectedFeedType = null;
-    }
   }
 
   @override
   void dispose() {
     _amountController.dispose();
+    _feedTypeController.dispose();
+    _notesController.dispose();
     super.dispose();
   }
 
@@ -224,8 +214,11 @@ class _FeedRecordFormState extends State<FeedRecordForm> {
       id: widget.existing?.id,
       livestockId: widget.livestockId,
       datetime: _selectedDate!,
-      feedType: _selectedFeedType!,
+      feedType: _feedTypeController.text.trim(),
       amount: double.tryParse(_amountController.text.trim()) ?? 0,
+      notes: _notesController.text.trim().isEmpty
+          ? null
+          : _notesController.text.trim(),
     );
 
     await widget.onSubmit(rec);
@@ -266,24 +259,16 @@ class _FeedRecordFormState extends State<FeedRecordForm> {
                 ),
                 const SizedBox(width: 16),
                 Expanded(
-                  child: DropdownButtonFormField<String>(
-                    value: _feedTypes.contains(_selectedFeedType)
-                        ? _selectedFeedType
-                        : null,
+                  child: TextFormField(
+                    controller: _feedTypeController,
                     decoration: const InputDecoration(
                       labelText: 'Feed Type',
                       border: OutlineInputBorder(),
                     ),
-                    items: _feedTypes.map((type) {
-                      return DropdownMenuItem(
-                        value: type,
-                        child: Text(type),
-                      );
-                    }).toList(),
-                    onChanged: (val) => setState(() => _selectedFeedType = val),
-                    validator: (v) => v == null || v.isEmpty
-                        ? 'Please choose a feed type'
-                        : null,
+                    validator: (v) =>
+                        v == null || v.trim().isEmpty
+                            ? 'Feed type is required'
+                            : null,
                   ),
                 ),
               ],
@@ -298,6 +283,15 @@ class _FeedRecordFormState extends State<FeedRecordForm> {
               keyboardType: TextInputType.number,
               validator: (v) =>
                   v == null || v.trim().isEmpty ? 'Amount is required' : null,
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _notesController,
+              decoration: const InputDecoration(
+                labelText: 'Notes (optional)',
+                border: OutlineInputBorder(),
+              ),
+              maxLines: 2,
             ),
             const SizedBox(height: 24),
             SizedBox(
