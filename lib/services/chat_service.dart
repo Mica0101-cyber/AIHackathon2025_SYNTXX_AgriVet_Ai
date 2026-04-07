@@ -5,8 +5,7 @@ import '../models/message.dart';
 
 class ChatService {
   final String endpoint =
-      'https://agrivet-api-989999017956.asia-southeast1.run.app/chat';
-
+      'https://agrivet-api-989999017956.asia-southeast1.run.app';
   /// Sends the full message history, returns the assistant’s reply.
   Future<String> sendChat({
     required String sessionId,

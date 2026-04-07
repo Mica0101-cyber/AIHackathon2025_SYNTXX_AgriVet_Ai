@@ -3,52 +3,59 @@ import 'package:provider/provider.dart';
 import '../../models/contact.dart';
 import '../../view_models/contact_view_model.dart';
 
-class UserRegistrationScreen extends StatefulWidget {
-  const UserRegistrationScreen({Key? key}) : super(key: key);
+class AddContactScreen extends StatefulWidget {
+  const AddContactScreen({Key? key}) : super(key: key);
 
   @override
-  _UserRegistrationScreenState createState() => _UserRegistrationScreenState();
+  _AddContactScreenState createState() => _AddContactScreenState();
 }
 
-class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
+class _AddContactScreenState extends State<AddContactScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
   final _emailController = TextEditingController();
 
-  bool loading = false;
+  bool _isLoading = false;
 
-  Future<void> _registerUser() async {
+  Future<void> _saveContact() async {
     if (_formKey.currentState?.validate() ?? false) {
       setState(() {
-        loading = true;
+        _isLoading = true;
       });
-      final newUser = Contact(
+      
+      final newContact = Contact(
         name: _nameController.text.trim(),
         phone: _phoneController.text.trim(),
         email: _emailController.text.trim(),
       );
+      
       try {
         await Provider.of<ContactViewModel>(context, listen: false)
-            .addContact(newUser);
+            .addContact(newContact);
         
         // Show success message
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Registration successful!"),
-            backgroundColor: Colors.green,
-          ),
-        );
-        
-        Navigator.pop(context);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Contact added successfully!"),
+              backgroundColor: Colors.green,
+            ),
+          );
+          Navigator.pop(context); // Go back to the list screen
+        }
       } catch (error) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Registration failed: $error")),
-        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Failed to add contact: $error")),
+          );
+        }
       } finally {
-        setState(() {
-          loading = false;
-        });
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
       }
     }
   }
@@ -65,10 +72,10 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("User Registration"),
+        title: const Text("Add New Contact"),
         backgroundColor: Theme.of(context).primaryColor,
       ),
-      body: Padding(
+      body: SingleChildScrollView( // Added to prevent keyboard overflow
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
@@ -77,7 +84,7 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
             children: [
               const SizedBox(height: 20),
               const Text(
-                "Create Your Account",
+                "Contact Details",
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -85,7 +92,7 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
               ),
               const SizedBox(height: 8),
               const Text(
-                "Please fill in your details to register",
+                "Enter the information for the new contact",
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.grey,
@@ -156,14 +163,14 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
               ),
               const SizedBox(height: 32),
               
-              // Register Button
-              loading
+              // Save Button
+              _isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : SizedBox(
                       width: double.infinity,
                       height: 50,
                       child: ElevatedButton(
-                        onPressed: _registerUser,
+                        onPressed: _saveContact,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Theme.of(context).primaryColor,
                           foregroundColor: Colors.white,
@@ -172,27 +179,11 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
                           ),
                         ),
                         child: const Text(
-                          "Register",
+                          "Save Contact",
                           style: TextStyle(fontSize: 18),
                         ),
                       ),
                     ),
-              
-              const SizedBox(height: 16),
-              
-              // Login Link
-              Center(
-                child: TextButton(
-                  onPressed: () {
-                    // Navigate to login screen
-                    Navigator.pushReplacementNamed(context, '/login');
-                  },
-                  child: const Text(
-                    "Already have an account? Login here",
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
-              ),
             ],
           ),
         ),

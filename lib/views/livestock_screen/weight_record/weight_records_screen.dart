@@ -3,7 +3,6 @@ import 'package:phonebook_app/services/notification_service.dart';
 import 'package:provider/provider.dart';
 import '../../../models/weight_record.dart';
 import '../../../view_models/weight_records_view_model.dart';
-import '../../notifications/notifications_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class WeightRecordsScreen extends StatelessWidget {
